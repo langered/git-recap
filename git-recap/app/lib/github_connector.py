@@ -14,8 +14,6 @@ log = logging.getLogger(__name__)
 
 def create_github_client(github_host: str, github_token: str) -> Github:
     """Init the github client."""
-    print('hello world')
-    print('another hello')
     return Github(
         base_url='https://{0}/api/v3'.format(github_host),
         login_or_token=github_token,
