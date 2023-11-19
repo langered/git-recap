@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "git-recap"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+wemake-python-styleguide = "^0.18.0"
+mypy = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

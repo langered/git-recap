@@ -1,0 +1,15 @@
+name: CI/CD
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  style_checks:
+    name: Run style checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: wemake-python-styleguide
+        uses: wemake-services/wemake-python-styleguide@0.18.0
+        with:
+          path: "./git-recap"
