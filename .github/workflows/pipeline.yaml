@@ -7,11 +7,18 @@ jobs:
   style_checks:
     name: Run style checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./git-recap
     steps:
       - uses: actions/checkout@v4
-      - name: Copy setup.cfg
-        run: cp git-recap/setup.cfg .
-      - name: wemake-python-styleguide
-        uses: wemake-services/wemake-python-styleguide@0.18.0
+      - uses: actions/setup-python@v4
         with:
-          path: "./git-recap"
+          python-version: "3.12"
+      - uses: Gr1N/setup-poetry@v8
+      - name: Install dependencies
+        run: poetry install
+      - name: Run style checks
+        run: poetry run flake8 .
+      - name: Run type checks
+        run: poetry run mypy .
