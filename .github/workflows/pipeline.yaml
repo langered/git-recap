@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Copy setup.cfg
+        run: cp git-recap/setup.cfg .
       - name: wemake-python-styleguide
         uses: wemake-services/wemake-python-styleguide@0.18.0
         with:
