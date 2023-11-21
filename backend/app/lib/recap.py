@@ -19,4 +19,9 @@ class Client(object):
             exclude_repos = []  # type: ignore
         commits = self.github_client.get_commits(days, exclude_repos=exclude_repos)
         log.info('Found number of commits: {0}'.format(len(commits)))
+
+        issues = self.github_client.get_issues(days)
+        log.info('Found created issues: {0}'.format(len(issues['created'])))
+        log.info('Found commented issues: {0}'.format(len(issues['commented'])))
+
         return 'I have done everything.'
