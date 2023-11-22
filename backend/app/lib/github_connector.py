@@ -16,10 +16,10 @@ log = logging.getLogger(__name__)
 _GITHUB_TIME_FORMAT = '%Y-%m-%dT00:00:00Z'  # noqa: WPS323
 
 
-def create_github_client(github_host: str, github_token: str) -> Github:
+def create_github_client(github_api: str, github_token: str) -> Github:
     """Init the github client."""
     return Github(
-        base_url='https://{0}/api/v3'.format(github_host),
+        base_url='https://{0}'.format(github_api),
         login_or_token=github_token,
     )
 

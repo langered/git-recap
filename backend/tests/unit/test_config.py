@@ -17,12 +17,12 @@ class TestConfig:
         config.Settings()  # type: ignore
 
     def test_overwrite_days(self):
-        os.environ['GITHUB_HOST'] = 'https://github.example.com'
+        os.environ['GITHUB_API'] = 'https://github.example.com'
         os.environ['GITHUB_TOKEN'] = 'secret-token'
         os.environ['RECAP_DAYS'] = '2'
 
         settings = config.Settings()  # type: ignore
 
-        assert settings.github_host == 'https://github.example.com'
+        assert settings.github_api == 'https://github.example.com'
         assert settings.github_token == 'secret-token'
         assert settings.recap_days == 2

@@ -51,8 +51,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='settings.env', env_file_encoding='utf-8')
 
     # env variables
-    github_host: str
+    github_api: str
     github_token: str
+    openai_token: str
     recap_days: int = 1
 
     # variables from settings file

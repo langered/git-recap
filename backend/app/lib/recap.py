@@ -2,6 +2,7 @@
 import logging
 from dataclasses import dataclass
 
+from app.lib.ai_summarization import AIClient
 from app.lib.github_connector import Client as GithubConnectorClient
 
 log = logging.getLogger(__name__)
@@ -12,6 +13,7 @@ class Client(object):
     """Client for recap operations."""
 
     github_client: GithubConnectorClient
+    ai_client: AIClient
 
     def recap(self, days: int = 1, exclude_repos: list[str] = None) -> str:  # type: ignore
         """Recap the work."""
@@ -24,4 +26,4 @@ class Client(object):
         log.info('Found created issues: {0}'.format(len(issues['created'])))
         log.info('Found commented issues: {0}'.format(len(issues['commented'])))
 
-        return 'I have done everything.'
+        return self.ai_client.summarize(commits, issues)
