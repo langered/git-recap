@@ -10,6 +10,7 @@ class TestRecapClient:
     def before_each(self):
         self.mock_github_connector_client = Mock()
         self.mock_github_connector_client.get_commits.return_value = []
+        self.mock_github_connector_client.get_issues.return_value = {'created': [], 'commented': []}
         self.recap_client = recap.Client(
             self.mock_github_connector_client,
         )

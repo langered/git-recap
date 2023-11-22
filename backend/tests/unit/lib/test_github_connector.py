@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import Mock
 
 import pytest
@@ -9,7 +9,7 @@ from app.lib import github_connector
 
 
 @freeze_time('2023-11-01')
-class TestGithubConnectorClient:
+class TestGetCommits:
 
     @pytest.fixture(autouse=True, scope='function')
     def before_each(self):
@@ -118,3 +118,67 @@ class TestGithubConnectorClient:
                 ],
             },
         ]
+
+
+@freeze_time('2023-11-01')
+class TestGetIssues:
+    @pytest.fixture(autouse=True, scope='function')
+    def before_each(self):
+        self.mock_github = Mock()
+        self.mock_github.get_user.return_value = Mock(login='test-user')
+        self.github_connector_client = github_connector.Client(self.mock_github)
+
+        self.mock_created_issue_first = Mock(
+            title='First opened issue',
+            body='The body of the first issue',
+            html_url='org/repo1/issue-1',
+        )
+        self.mock_created_issue_second = Mock(
+            title='Second opened issue',
+            body='The body of the second issue',
+            html_url='org/repo2/issue-1',
+        )
+        self.mock_commented_issue_first = Mock(
+            title='First opened issue',
+            body='The body of the first issue',
+            html_url='org/repo1/issue-1',
+        )
+        comment_timestamp = datetime(2023, 10, 31, 12, 0, 0)
+        comment_timestamp = comment_timestamp.replace(tzinfo=timezone.utc)
+        self.mock_comment_on_first_issue = Mock(
+            body='This is my comment.',
+            user=Mock(login='test-user'),
+            created_at=comment_timestamp,
+        )
+        self.mock_commented_issue_first.get_comments.return_value = [self.mock_comment_on_first_issue]
+
+        self.mock_github.search_issues.side_effect = [
+            [self.mock_created_issue_first, self.mock_created_issue_second],
+            [self.mock_commented_issue_first],
+        ]
+
+    def test_get_issues_from_yesterday(self):
+        issues = self.github_connector_client.get_issues(1)
+
+        assert issues == {
+            'created': [
+                {
+                    'title': self.mock_created_issue_first.title,
+                    'body': self.mock_created_issue_first.body,
+                    'url': self.mock_created_issue_first.html_url,
+                },
+                {
+                    'title': self.mock_created_issue_second.title,
+                    'body': self.mock_created_issue_second.body,
+                    'url': self.mock_created_issue_second.html_url,
+                },
+            ],
+            'commented': [
+                {
+                    'title': self.mock_commented_issue_first.title,
+                    'body': self.mock_commented_issue_first.body,
+                    'url': self.mock_commented_issue_first.html_url,
+                    'comments': [self.mock_comment_on_first_issue.body],
+                },
+            ],
+        }
